@@ -1,6 +1,7 @@
 package application
 
 import model.Player
+import model.gamingstrategy.FixRockGamingStrategy
 import model.gamingstrategy.RandomGamingStrategy
 import model.rule.GameEngine
 
@@ -15,10 +16,10 @@ fun main(args: Array<String>) {
     }
 
     val playerOne = Player(RandomGamingStrategy(), "PlayerOne")
-    val playerTwo = Player(RandomGamingStrategy(), "PlayerOne")
+    val playerTwo = Player(FixRockGamingStrategy(), "PlayerTwo")
 
     GameEngine.playIt(rounds, playerOne, playerTwo)
 
     println("PlayerOne ${playerOne.getGameResult()}")
-    println("PlayerTwo ${playerOne.getGameResult()}")
+    println("PlayerTwo ${playerTwo.getGameResult()}")
 }
