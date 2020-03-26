@@ -2,16 +2,16 @@ package model
 
 data class Player(val gamingStrategy: IGamingStrategy, val name: String) {
 
-    var countWins = 0
-    var countLoses = 0
-    var countDraws = 0
+    private var countWins = 0
+    private var countLoses = 0
+    private var countDrawns = 0
 
     fun play(): PlayElement {
         return gamingStrategy.choiceGameElement()
     }
 
     fun drawn() {
-        countDraws++
+        countDrawns++
     }
 
     fun lose() {
@@ -20,5 +20,9 @@ data class Player(val gamingStrategy: IGamingStrategy, val name: String) {
 
     fun win() {
         countWins++
+    }
+
+    fun getGameResult(): GameResult {
+        return GameResult(countWins, countLoses, countDrawns)
     }
 }
