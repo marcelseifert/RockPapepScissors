@@ -28,5 +28,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     # Runs a single command using the runners shell
-    - name: Run a one-line script
+    - name: Run Test
       run: ./gradlew test
+    - name: Start RockPaperScissors
+      run: ./gradlew run
