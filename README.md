@@ -1,7 +1,12 @@
-# RockPaperScissors
+# RockPaperScissors...Spock Lizard
 
-## Start Me
+The well-known game with the expansion Spock / Lizard (BigBangTheory). 
+Player 1 plays randomly, player 2 always plays Rock.
 
-.\gradlew run {round}
+If no number of rounds is given, 100 rounds are always played.
 
-if round is not set then 100 rounds is take as the default value
+The game can be started with 
+.\gradlew run 
+
+with details of the rounds number (e.g 2)
+.\gradlew run 2
