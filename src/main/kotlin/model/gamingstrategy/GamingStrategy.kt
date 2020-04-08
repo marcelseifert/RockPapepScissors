@@ -2,7 +2,7 @@ package model.gamingstrategy
 
 import model.PlayElement
 
-interface IGamingStrategy {
+interface GamingStrategy {
 
     fun choiceGameElement(): PlayElement
 }
