@@ -4,12 +4,12 @@ import model.PlayElement
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-class FixRockGamingStrategyTest {
+class FixGamingStrategyTest {
 
-    private val fixRockGamingStrategy = FixRockGamingStrategy()
+    private val fixGamingStrategy = FixGamingStrategy(PlayElement.ROCK)
 
     @Test
     fun `when choiceGameElement then Rock will always be returned`() {
-        Assertions.assertTrue(fixRockGamingStrategy.choiceGameElement() == PlayElement.ROCK)
+        Assertions.assertTrue(fixGamingStrategy.choiceGameElement() == PlayElement.ROCK)
     }
 }

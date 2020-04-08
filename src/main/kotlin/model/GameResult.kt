@@ -1,7 +1,29 @@
 package model
 
-class GameResult(val wins: Int, val loses: Int, val drawns: Int) {
+import java.util.concurrent.atomic.AtomicInteger
+
+class GameResult {
+    var wins = AtomicInteger()
+    var loses = AtomicInteger()
+    var draws = AtomicInteger()
+
+    fun getRounds(): Int {
+        return wins.get() + loses.get() + draws.get()
+    }
+
+    fun increaseDraws() {
+        draws.incrementAndGet()
+    }
+
+    fun increaseWins() {
+        wins.incrementAndGet()
+    }
+
+    fun increaseLoses() {
+        loses.incrementAndGet()
+    }
+
     override fun toString(): String {
-        return "GameResult(wins=$wins, drawns=$drawns)"
+        return "Wins: ${wins} Loses: ${loses} Draws: ${draws}"
     }
 }

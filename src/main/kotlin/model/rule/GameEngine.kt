@@ -1,44 +1,38 @@
 package model.rule
 
+import model.GameResults
 import model.PlayElement
 import model.Player
 
 object GameEngine {
 
+    lateinit var gameResults: GameResults
+
     fun playIt(rounds: Int, playerOne: Player, playerTwo: Player) {
-        for (i in 0 until rounds) when (verifyResult(playerOne.play(), playerTwo.play())) {
-            Result.DRAWN -> {
-                playerOne.drawn()
-                playerTwo.drawn()
-            }
-            Result.PLAYERONE_WINS -> {
-                playerOne.win()
-                playerTwo.lose()
-            }
-            Result.PLAYERTWO_WINS -> {
-                playerOne.lose()
-                playerTwo.win()
-            }
+        gameResults = GameResults(playerOne, playerTwo)
+        for (i in 1..rounds) {
+            verifyResult(playerOne.play(), playerTwo.play())
         }
     }
 
-    private fun verifyResult(playElementFromPlayerOne: PlayElement, playElementFromPlayerTwo: PlayElement): Result {
+    private fun verifyResult(playElementFromPlayerOne: PlayElement, playElementFromPlayerTwo: PlayElement) {
         if (playElementFromPlayerOne == playElementFromPlayerTwo) {
-            return Result.DRAWN
+            gameResults.allPlayersDraws()
         }
-        if ((playElementFromPlayerOne == PlayElement.ROCK && playElementFromPlayerTwo == PlayElement.SCISSORS) ||
-            (playElementFromPlayerOne == PlayElement.PAPER && playElementFromPlayerTwo == PlayElement.ROCK) ||
-            (playElementFromPlayerOne == PlayElement.SCISSORS && playElementFromPlayerTwo == PlayElement.PAPER)
-        ) {
-            return Result.PLAYERONE_WINS
+        if (hasPlayerOneWon(playElementFromPlayerOne, playElementFromPlayerTwo)) {
+            gameResults.playerOneWins()
+        } else {
+            gameResults.playerTwoWins()
         }
-
-        return Result.PLAYERTWO_WINS
     }
 
-    enum class Result {
-        PLAYERONE_WINS,
-        PLAYERTWO_WINS,
-        DRAWN
-    }
+    private fun hasPlayerOneWon(playElementFromPlayerOne: PlayElement, playElementFromPlayerTwo: PlayElement): Boolean =
+        when (playElementFromPlayerOne) {
+            PlayElement.SCISSORS -> playElementFromPlayerTwo == PlayElement.PAPER || playElementFromPlayerTwo == PlayElement.LIZARD
+            PlayElement.ROCK -> playElementFromPlayerTwo == PlayElement.SCISSORS || playElementFromPlayerTwo == PlayElement.LIZARD
+            PlayElement.PAPER -> playElementFromPlayerTwo == PlayElement.ROCK || playElementFromPlayerTwo == PlayElement.SPOCK
+            PlayElement.LIZARD -> playElementFromPlayerTwo == PlayElement.SPOCK || playElementFromPlayerTwo == PlayElement.PAPER
+            PlayElement.SPOCK -> playElementFromPlayerTwo == PlayElement.SCISSORS || playElementFromPlayerTwo == PlayElement.ROCK
+        }
+
 }

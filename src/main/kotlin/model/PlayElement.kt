@@ -1,5 +1,5 @@
 package model
 
 enum class PlayElement {
-    ROCK, PAPER, SCISSORS
+    ROCK, PAPER, SCISSORS, LIZARD, SPOCK
 }

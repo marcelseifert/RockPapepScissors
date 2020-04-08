@@ -1,4 +1,6 @@
-package model
+package model.gamingstrategy
+
+import model.PlayElement
 
 interface IGamingStrategy {
 

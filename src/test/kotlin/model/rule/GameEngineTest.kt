@@ -1,63 +1,52 @@
 package model.rule
 
-import io.mockk.every
-import io.mockk.mockkClass
-import io.mockk.verify
 import model.PlayElement
 import model.Player
+import model.gamingstrategy.FixGamingStrategy
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 
 class GameEngineTest {
 
-
     @Test
-    fun `if the game is tied then on all players drawn is called`() {
-        //Arrange
-        val playerOne = mockkClass(Player::class, relaxed = true)
-        val playerTwo = mockkClass(Player::class, relaxed = true)
+    fun `if rounds is set to 5 then gameResults should return 5 as well`() {
+        val playerPaper = Player(FixGamingStrategy(PlayElement.PAPER), "PlayerPaper")
+        val playerScissors = Player(FixGamingStrategy(PlayElement.SCISSORS), "PlayerScissors")
 
-        every { playerOne.play() } returns PlayElement.PAPER
-        every { playerTwo.play() } returns PlayElement.PAPER
-
-        //Act
-        GameEngine.playIt(1, playerOne, playerTwo)
-
-        //Assert
-        verify { playerOne.drawn() }
-        verify { playerTwo.drawn() }
+        GameEngine.playIt(5, playerPaper, playerScissors)
+        Assertions.assertEquals(5, GameEngine.gameResults.getRounds())
     }
 
-    @Test
-    fun `if playerOne wins the game then on playerOne is win called and on playerTwo is lose called`() {
-        //Arrange
-        val playerOne = mockkClass(Player::class, relaxed = true)
-        val playerTwo = mockkClass(Player::class, relaxed = true)
-
-        every { playerOne.play() } returns PlayElement.PAPER
-        every { playerTwo.play() } returns PlayElement.ROCK
-
-        //Act
+    @ParameterizedTest
+    @MethodSource("testData")
+    fun `if player one should win then player one scores reflect it`(playerOne: Player, playerTwo: Player) {
         GameEngine.playIt(1, playerOne, playerTwo)
-
-        //Assert
-        verify(exactly = 1) { playerOne.win() }
-        verify(exactly = 1) { playerTwo.lose() }
+        Assertions.assertEquals(1, GameEngine.gameResults.gameResultPlayerOne.wins.get())
+        Assertions.assertEquals(1, GameEngine.gameResults.gameResultPlayerTwo.loses.get())
     }
 
-    @Test
-    fun `if playerTwo wins the game then on playerOne is lose called and on playerTwo is win called`() {
-        //Arrange
-        val playerOne = mockkClass(Player::class, relaxed = true)
-        val playerTwo = mockkClass(Player::class, relaxed = true)
+    companion object {
+        val playerPaper = Player(FixGamingStrategy(PlayElement.PAPER), "PlayerPaper")
+        val playerScissors = Player(FixGamingStrategy(PlayElement.SCISSORS), "PlayerScissors")
+        val playerRock = Player(FixGamingStrategy(PlayElement.ROCK), "PlayerScissors")
+        val playerSpock = Player(FixGamingStrategy(PlayElement.SPOCK), "PlayerScissors")
+        val playerLizard = Player(FixGamingStrategy(PlayElement.LIZARD), "PlayerScissors")
 
-        every { playerOne.play() } returns PlayElement.SCISSORS
-        every { playerTwo.play() } returns PlayElement.ROCK
-
-        //Act
-        GameEngine.playIt(1, playerOne, playerTwo)
-
-        //Assert
-        verify(exactly = 1) { playerOne.lose() }
-        verify(exactly = 1) { playerTwo.win() }
+        @JvmStatic
+        fun testData() = listOf(
+            Arguments.of(playerPaper, playerRock),
+            Arguments.of(playerPaper, playerSpock),
+            Arguments.of(playerLizard, playerPaper),
+            Arguments.of(playerLizard, playerSpock),
+            Arguments.of(playerScissors, playerPaper),
+            Arguments.of(playerScissors, playerLizard),
+            Arguments.of(playerSpock, playerRock),
+            Arguments.of(playerSpock, playerScissors),
+            Arguments.of(playerRock, playerLizard),
+            Arguments.of(playerRock, playerScissors)
+        )
     }
 }
