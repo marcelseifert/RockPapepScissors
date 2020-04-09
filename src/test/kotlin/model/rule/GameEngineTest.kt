@@ -1,8 +1,8 @@
 package model.rule
 
 import model.PlayElement
-import model.Player
 import model.gamingstrategy.FixGamingStrategy
+import model.gamingstrategy.GamingStrategy
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -13,40 +13,41 @@ class GameEngineTest {
 
     @Test
     fun `if rounds is set to 5 then gameResults should return 5 as well`() {
-        val playerPaper = Player(FixGamingStrategy(PlayElement.PAPER), "PlayerPaper")
-        val playerScissors = Player(FixGamingStrategy(PlayElement.SCISSORS), "PlayerScissors")
-
-        GameEngine.playIt(5, playerPaper, playerScissors)
-        Assertions.assertEquals(5, GameEngine.gameResults.getRounds())
+        GameEngine.playIt(5, FixGamingStrategy(PlayElement.PAPER), FixGamingStrategy(PlayElement.SCISSORS))
+        Assertions.assertEquals(5, GameEngine.gameResult.getRounds())
     }
 
     @ParameterizedTest
     @MethodSource("testData")
-    fun `if player one should win then player one scores reflect it`(playerOne: Player, playerTwo: Player) {
+    fun `if player one should win then player one scores reflect it`(
+        playerOne: GamingStrategy,
+        playerTwo: GamingStrategy
+    ) {
         GameEngine.playIt(1, playerOne, playerTwo)
-        Assertions.assertEquals(1, GameEngine.gameResults.gameResultPlayerOne.wins.get())
-        Assertions.assertEquals(1, GameEngine.gameResults.gameResultPlayerTwo.loses.get())
+        Assertions.assertEquals(1, GameEngine.gameResult.winsForPlayerOne)
+        Assertions.assertEquals(1, GameEngine.gameResult.losesForPlayerTwo)
+        GameEngine.gameResult.reset()
     }
 
     companion object {
-        val playerPaper = Player(FixGamingStrategy(PlayElement.PAPER), "PlayerPaper")
-        val playerScissors = Player(FixGamingStrategy(PlayElement.SCISSORS), "PlayerScissors")
-        val playerRock = Player(FixGamingStrategy(PlayElement.ROCK), "PlayerScissors")
-        val playerSpock = Player(FixGamingStrategy(PlayElement.SPOCK), "PlayerScissors")
-        val playerLizard = Player(FixGamingStrategy(PlayElement.LIZARD), "PlayerScissors")
+        val strategyPaper = FixGamingStrategy(PlayElement.PAPER)
+        val strategyScissors = FixGamingStrategy(PlayElement.SCISSORS)
+        val strategyRock = FixGamingStrategy(PlayElement.ROCK)
+        val strategySpock = FixGamingStrategy(PlayElement.SPOCK)
+        val strategyLizard = FixGamingStrategy(PlayElement.LIZARD)
 
         @JvmStatic
         fun testData() = listOf(
-            Arguments.of(playerPaper, playerRock),
-            Arguments.of(playerPaper, playerSpock),
-            Arguments.of(playerLizard, playerPaper),
-            Arguments.of(playerLizard, playerSpock),
-            Arguments.of(playerScissors, playerPaper),
-            Arguments.of(playerScissors, playerLizard),
-            Arguments.of(playerSpock, playerRock),
-            Arguments.of(playerSpock, playerScissors),
-            Arguments.of(playerRock, playerLizard),
-            Arguments.of(playerRock, playerScissors)
+            Arguments.of(strategyPaper, strategyRock),
+            Arguments.of(strategyPaper, strategySpock),
+            Arguments.of(strategyLizard, strategyPaper),
+            Arguments.of(strategyLizard, strategySpock),
+            Arguments.of(strategyScissors, strategyPaper),
+            Arguments.of(strategyScissors, strategyLizard),
+            Arguments.of(strategySpock, strategyRock),
+            Arguments.of(strategySpock, strategyScissors),
+            Arguments.of(strategyRock, strategyLizard),
+            Arguments.of(strategyRock, strategyScissors)
         )
     }
 }

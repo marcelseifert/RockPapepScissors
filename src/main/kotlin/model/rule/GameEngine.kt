@@ -1,28 +1,27 @@
 package model.rule
 
-import model.GameResults
+import model.GameResult
 import model.PlayElement
-import model.Player
+import model.gamingstrategy.GamingStrategy
 
 object GameEngine {
 
-    lateinit var gameResults: GameResults
+    var gameResult = GameResult()
 
-    fun playIt(rounds: Int, playerOne: Player, playerTwo: Player) {
-        gameResults = GameResults(playerOne, playerTwo)
+    fun playIt(rounds: Int, playerOneStrategy: GamingStrategy, playerTwoStrategy: GamingStrategy) {
         for (i in 1..rounds) {
-            verifyResult(playerOne.play(), playerTwo.play())
+            verifyResult(playerOneStrategy.choiceGameElement(), playerTwoStrategy.choiceGameElement())
         }
     }
 
     private fun verifyResult(playElementFromPlayerOne: PlayElement, playElementFromPlayerTwo: PlayElement) {
         if (playElementFromPlayerOne == playElementFromPlayerTwo) {
-            gameResults.allPlayersDraws()
+            gameResult.drawForPlayerOne()
         }
         if (hasPlayerOneWon(playElementFromPlayerOne, playElementFromPlayerTwo)) {
-            gameResults.playerOneWins()
+            gameResult.winForPlayerOne()
         } else {
-            gameResults.playerTwoWins()
+            gameResult.loseForPlayerOne()
         }
     }
 

@@ -1,29 +1,42 @@
 package model
 
-import java.util.concurrent.atomic.AtomicInteger
-
 class GameResult {
-    var wins = AtomicInteger()
-    var loses = AtomicInteger()
-    var draws = AtomicInteger()
+    var winsForPlayerOne = 0
+    var losesForPlayerOne = 0
+    var drawsForPlayerOne = 0
+
+    val winsForPlayerTwo: Int
+        get() = losesForPlayerOne
+    val losesForPlayerTwo: Int
+        get() = winsForPlayerOne
+    val drawsForPlayerTwo: Int
+        get() = drawsForPlayerOne
+
 
     fun getRounds(): Int {
-        return wins.get() + loses.get() + draws.get()
+        return winsForPlayerOne + losesForPlayerOne + drawsForPlayerOne
     }
 
-    fun increaseDraws() {
-        draws.incrementAndGet()
+    fun drawForPlayerOne() {
+        drawsForPlayerOne++
     }
 
-    fun increaseWins() {
-        wins.incrementAndGet()
+    fun winForPlayerOne() {
+        winsForPlayerOne++
     }
 
-    fun increaseLoses() {
-        loses.incrementAndGet()
+    fun loseForPlayerOne() {
+        losesForPlayerOne++
+    }
+
+    fun reset() {
+        winsForPlayerOne = 0
+        losesForPlayerOne = 0
+        drawsForPlayerOne = 0
     }
 
     override fun toString(): String {
-        return "Wins: ${wins} Loses: ${loses} Draws: ${draws}"
+        return "PlayerOne Wins: ${winsForPlayerOne} Loses: ${losesForPlayerOne} Draws: ${drawsForPlayerOne}" + System.lineSeparator() +
+                "PlayerTwo Wins: ${winsForPlayerTwo} Loses: ${losesForPlayerTwo} Draws: ${drawsForPlayerTwo}"
     }
 }

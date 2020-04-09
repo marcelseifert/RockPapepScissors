@@ -1,7 +1,6 @@
 package application
 
 import model.PlayElement
-import model.Player
 import model.gamingstrategy.FixGamingStrategy
 import model.gamingstrategy.RandomGamingStrategy
 import model.rule.GameEngine
@@ -16,10 +15,7 @@ fun main(args: Array<String>) {
         println("start RockPaperScissors with ${args[0]} round(s)")
     }
 
-    val playerOne = Player(RandomGamingStrategy(), "PlayerOne")
-    val playerTwo = Player(FixGamingStrategy(PlayElement.ROCK), "PlayerTwo")
-
-    GameEngine.playIt(rounds, playerOne, playerTwo)
-    GameEngine.gameResults.printAllGameResults()
+    GameEngine.playIt(rounds, RandomGamingStrategy(), FixGamingStrategy(PlayElement.ROCK))
+    println(GameEngine.gameResult)
 
 }
