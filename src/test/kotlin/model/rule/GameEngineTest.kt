@@ -1,5 +1,6 @@
 package model.rule
 
+import model.GameEngine
 import model.PlayElement
 import model.gamingstrategy.FixGamingStrategy
 import model.gamingstrategy.GamingStrategy
@@ -13,8 +14,9 @@ class GameEngineTest {
 
     @Test
     fun `if rounds is set to 5 then gameResults should return 5 as well`() {
-        GameEngine.playIt(5, FixGamingStrategy(PlayElement.PAPER), FixGamingStrategy(PlayElement.SCISSORS))
-        Assertions.assertEquals(5, GameEngine.gameResult.getRounds())
+        val summary =
+            GameEngine.playIt(5, FixGamingStrategy(PlayElement.PAPER), FixGamingStrategy(PlayElement.SCISSORS))
+        Assertions.assertEquals(5, summary.rounds)
     }
 
     @ParameterizedTest
@@ -23,10 +25,9 @@ class GameEngineTest {
         playerOne: GamingStrategy,
         playerTwo: GamingStrategy
     ) {
-        GameEngine.playIt(1, playerOne, playerTwo)
-        Assertions.assertEquals(1, GameEngine.gameResult.winsForPlayerOne)
-        Assertions.assertEquals(1, GameEngine.gameResult.losesForPlayerTwo)
-        GameEngine.gameResult.reset()
+        val summary = GameEngine.playIt(1, playerOne, playerTwo)
+        Assertions.assertEquals(1, summary.playerOneWins)
+        Assertions.assertEquals(0, summary.playerTwoTwins)
     }
 
     companion object {
