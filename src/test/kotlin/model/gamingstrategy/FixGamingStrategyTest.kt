@@ -8,6 +8,6 @@ class FixGamingStrategyTest {
 
     @Test
     fun `when choiceGameElement then Rock will always be returned`() {
-        Assertions.assertTrue(FixGamingStrategy.buildStrategy(PlayElement.ROCK) == PlayElement.ROCK)
+        Assertions.assertTrue(FixGamingStrategy.buildStrategy(PlayElement.ROCK).invoke() == PlayElement.ROCK)
     }
 }
