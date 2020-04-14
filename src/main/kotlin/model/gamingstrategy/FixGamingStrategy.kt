@@ -2,8 +2,8 @@ package model.gamingstrategy
 
 import model.PlayElement
 
-class FixGamingStrategy(val playElement: PlayElement) : GamingStrategy {
+object FixGamingStrategy {
 
-    override fun choiceGameElement(): PlayElement = playElement
+    fun buildStrategy(playElement: PlayElement) = { -> playElement }
 
 }

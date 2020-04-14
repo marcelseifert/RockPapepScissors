@@ -11,5 +11,10 @@ fun main(args: Array<String>) {
     } else {
         args[0].toInt()
     }
-    println(GameEngine.playIt(rounds, RandomGamingStrategy(), FixGamingStrategy(PlayElement.ROCK)))
+    println(
+        GameEngine.playIt(
+            rounds, RandomGamingStrategy.buildStrategy(PlayElement.values()),
+            FixGamingStrategy.buildStrategy(PlayElement.ROCK)
+        )
+    )
 }

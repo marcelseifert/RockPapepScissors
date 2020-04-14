@@ -3,7 +3,6 @@ package model.rule
 import model.GameEngine
 import model.PlayElement
 import model.gamingstrategy.FixGamingStrategy
-import model.gamingstrategy.GamingStrategy
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -15,15 +14,19 @@ class GameEngineTest {
     @Test
     fun `if rounds is set to 5 then gameResults should return 5 as well`() {
         val summary =
-            GameEngine.playIt(5, FixGamingStrategy(PlayElement.PAPER), FixGamingStrategy(PlayElement.SCISSORS))
+            GameEngine.playIt(
+                5,
+                FixGamingStrategy.buildStrategy(PlayElement.PAPER),
+                FixGamingStrategy.buildStrategy(PlayElement.SCISSORS)
+            )
         Assertions.assertEquals(5, summary.rounds)
     }
 
     @ParameterizedTest
     @MethodSource("testData")
     fun `if player one should win then player one scores reflect it`(
-        playerOne: GamingStrategy,
-        playerTwo: GamingStrategy
+        playerOne: () -> PlayElement,
+        playerTwo: () -> PlayElement
     ) {
         val summary = GameEngine.playIt(1, playerOne, playerTwo)
         Assertions.assertEquals(1, summary.playerOneWins)
@@ -31,11 +34,11 @@ class GameEngineTest {
     }
 
     companion object {
-        val strategyPaper = FixGamingStrategy(PlayElement.PAPER)
-        val strategyScissors = FixGamingStrategy(PlayElement.SCISSORS)
-        val strategyRock = FixGamingStrategy(PlayElement.ROCK)
-        val strategySpock = FixGamingStrategy(PlayElement.SPOCK)
-        val strategyLizard = FixGamingStrategy(PlayElement.LIZARD)
+        val strategyPaper = FixGamingStrategy.buildStrategy(PlayElement.PAPER)
+        val strategyScissors = FixGamingStrategy.buildStrategy(PlayElement.SCISSORS)
+        val strategyRock = FixGamingStrategy.buildStrategy(PlayElement.ROCK)
+        val strategySpock = FixGamingStrategy.buildStrategy(PlayElement.SPOCK)
+        val strategyLizard = FixGamingStrategy.buildStrategy(PlayElement.LIZARD)
 
         @JvmStatic
         fun testData() = listOf(

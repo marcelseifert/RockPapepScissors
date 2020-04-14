@@ -1,15 +1,13 @@
 package model
 
-import model.gamingstrategy.GamingStrategy
-
 object GameEngine {
 
-    fun playIt(rounds: Int, playerOneStrategy: GamingStrategy, playerTwoStrategy: GamingStrategy): Summary =
+    fun playIt(rounds: Int, playerOneStrategy: () -> PlayElement, playerTwoStrategy: () -> PlayElement): Summary =
         (1..rounds)
             .map {
                 buildGameResult(
-                    playerOneStrategy.choiceGameElement(),
-                    playerTwoStrategy.choiceGameElement()
+                    playerOneStrategy.invoke(),
+                    playerTwoStrategy.invoke()
                 )
             }
             .groupingBy { it }.eachCount().map { (key, value) ->
