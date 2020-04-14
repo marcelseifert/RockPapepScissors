@@ -12,15 +12,17 @@ object GameEngine {
                     playerTwoStrategy.choiceGameElement()
                 )
             }
-            .groupBy { it }.values
-            .fold(initial = Summary(0, 0, 0)) { gameResult, element ->
-                val sumPlayerOneWins = if (element.contains(GameResultValues.PLAYER_ONE_WINS)) element.size else 0
-                val sumPlayerTwoWins = if (element.contains(GameResultValues.PLAYER_TWO_WINS)) element.size else 0
-                val sumDraws = if (element.contains(GameResultValues.DRAW)) element.size else 0
+            .groupingBy { it }.eachCount().map { (key, value) ->
+                when (key) {
+                    GameResultValues.DRAW -> Summary(0, 0, value)
+                    GameResultValues.PLAYER_ONE_WINS -> Summary(value, 0, 0)
+                    GameResultValues.PLAYER_TWO_WINS -> Summary(0, value, 0)
+                }
+            }.fold(Summary(0, 0, 0)) { summary, element ->
                 Summary(
-                    gameResult.playerOneWins + sumPlayerOneWins,
-                    gameResult.playerTwoTwins + sumPlayerTwoWins,
-                    gameResult.draws + sumDraws
+                    summary.playerOneWins + element.playerOneWins,
+                    summary.playerTwoTwins + element.playerTwoTwins,
+                    summary.draws + element.draws
                 )
             }
 
