@@ -2,27 +2,33 @@ package model
 
 object GameEngine {
 
-    fun playIt(rounds: Int, playerOneStrategy: () -> PlayElement, playerTwoStrategy: () -> PlayElement): Summary =
-        (1..rounds)
-            .map {
-                buildGameResult(
-                    playerOneStrategy.invoke(),
-                    playerTwoStrategy.invoke()
-                )
-            }
-            .groupingBy { it }.eachCount().map { (key, value) ->
-                when (key) {
-                    GameResultValues.DRAW -> Summary(0, 0, value)
-                    GameResultValues.PLAYER_ONE_WINS -> Summary(value, 0, 0)
-                    GameResultValues.PLAYER_TWO_WINS -> Summary(0, value, 0)
-                }
-            }.fold(Summary(0, 0, 0)) { summary, element ->
-                Summary(
-                    summary.playerOneWins + element.playerOneWins,
-                    summary.playerTwoTwins + element.playerTwoTwins,
-                    summary.draws + element.draws
-                )
-            }
+    fun playIt(rounds: Int, playerOneStrategy: () -> PlayElement, playerTwoStrategy: () -> PlayElement): Summary {
+        return createSummary(rounds, playerOneStrategy, playerTwoStrategy, Summary(0, 0, 0))
+    }
+
+    private fun createSummary(
+        rounds: Int,
+        playerOneStrategy: () -> PlayElement,
+        playerTwoStrategy: () -> PlayElement,
+        acc: Summary
+    ): Summary {
+        var summary: Summary
+
+        val result = buildGameResult(
+            playerOneStrategy.invoke(),
+            playerTwoStrategy.invoke()
+        )
+        when (result) {
+            GameResultValues.DRAW -> summary = Summary(acc.playerOneWins, acc.playerTwoTwins, acc.draws + 1)
+            GameResultValues.PLAYER_ONE_WINS -> summary = Summary(acc.playerOneWins + 1, acc.playerTwoTwins, acc.draws)
+            GameResultValues.PLAYER_TWO_WINS -> summary = Summary(acc.playerOneWins, acc.playerTwoTwins + 1, acc.draws)
+        }
+
+        if (rounds > 1) {
+            return createSummary(rounds - 1, playerOneStrategy, playerTwoStrategy, summary)
+        }
+        return summary
+    }
 
     private fun buildGameResult(
         playElementFromPlayerOne: PlayElement,
