@@ -6,7 +6,7 @@ object GameEngine {
         return createSummary(rounds, playerOneStrategy, playerTwoStrategy, Summary(0, 0, 0))
     }
 
-    private fun createSummary(
+    private tailrec fun createSummary(
         rounds: Int,
         playerOneStrategy: () -> PlayElement,
         playerTwoStrategy: () -> PlayElement,
