@@ -12,29 +12,23 @@ object GameEngine {
         playerTwoStrategy: () -> PlayElement,
         acc: Summary
     ): Summary {
+
         val funPlayerOneWins = { -> Summary(acc.playerOneWins + 1, acc.playerTwoTwins, acc.draws, acc.rounds + 1) }
         val funPlayerTwoWins = { -> Summary(acc.playerOneWins, acc.playerTwoTwins + 1, acc.draws, acc.rounds + 1) }
         val funPlayersTie = { -> Summary(acc.playerOneWins, acc.playerTwoTwins, acc.draws + 1, acc.rounds + 1) }
 
-        if (rounds > 1) {
-            return createSummary(
-                rounds - 1, playerOneStrategy, playerTwoStrategy, buildGameResult(
-                    playerOneStrategy.invoke(),
-                    playerTwoStrategy.invoke(),
-                    funPlayerOneWins,
-                    funPlayerTwoWins,
-                    funPlayersTie
-                ).invoke()
-            )
-        }
-
-        return buildGameResult(
+        val summary = buildGameResult(
             playerOneStrategy.invoke(),
             playerTwoStrategy.invoke(),
             funPlayerOneWins,
             funPlayerTwoWins,
             funPlayersTie
-        ).invoke()
+        )
+        if (rounds > 1) {
+            return createSummary(rounds - 1, playerOneStrategy, playerTwoStrategy, summary)
+        }
+
+        return summary
     }
 
     private fun buildGameResult(
@@ -43,16 +37,16 @@ object GameEngine {
         funPlayerOneWins: () -> Summary,
         funPlayerTwoWins: () -> Summary,
         funTie: () -> Summary
-    ): () -> Summary {
+    ): Summary {
         return when {
             playElementFromPlayerOne == playElementFromPlayerTwo -> {
-                funTie
+                funTie.invoke()
             }
             hasPlayerOneWon(playElementFromPlayerOne, playElementFromPlayerTwo) -> {
-                funPlayerOneWins
+                funPlayerOneWins.invoke()
             }
             else -> {
-                funPlayerTwoWins
+                funPlayerTwoWins.invoke()
             }
         }
     }
