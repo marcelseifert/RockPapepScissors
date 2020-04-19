@@ -12,37 +12,40 @@ object GameEngine {
         playerTwoStrategy: () -> PlayElement,
         acc: Summary
     ): Summary {
-        var summary: Summary
-
-        val result = buildGameResult(
-            playerOneStrategy.invoke(),
-            playerTwoStrategy.invoke()
-        )
-        when (result) {
-            GameResultValues.DRAW -> summary = Summary(acc.playerOneWins, acc.playerTwoTwins, acc.draws + 1)
-            GameResultValues.PLAYER_ONE_WINS -> summary = Summary(acc.playerOneWins + 1, acc.playerTwoTwins, acc.draws)
-            GameResultValues.PLAYER_TWO_WINS -> summary = Summary(acc.playerOneWins, acc.playerTwoTwins + 1, acc.draws)
-        }
-
         if (rounds > 1) {
-            return createSummary(rounds - 1, playerOneStrategy, playerTwoStrategy, summary)
+            return createSummary(rounds - 1, playerOneStrategy, playerTwoStrategy, buildGameResult(
+                playerOneStrategy.invoke(),
+                playerTwoStrategy.invoke(),
+                { -> Summary(acc.playerOneWins + 1, acc.playerTwoTwins, acc.draws) },
+                { -> Summary(acc.playerOneWins, acc.playerTwoTwins + 1, acc.draws) },
+                { -> Summary(acc.playerOneWins, acc.playerTwoTwins, acc.draws + 1) }
+            ).invoke())
         }
-        return summary
+        return buildGameResult(
+            playerOneStrategy.invoke(),
+            playerTwoStrategy.invoke(),
+            { -> Summary(acc.playerOneWins + 1, acc.playerTwoTwins, acc.draws) },
+            { -> Summary(acc.playerOneWins, acc.playerTwoTwins + 1, acc.draws) },
+            { -> Summary(acc.playerOneWins, acc.playerTwoTwins, acc.draws + 1) }
+        ).invoke()
     }
 
     private fun buildGameResult(
         playElementFromPlayerOne: PlayElement,
-        playElementFromPlayerTwo: PlayElement
-    ): GameResultValues {
+        playElementFromPlayerTwo: PlayElement,
+        funPlayerOneWins: () -> Summary,
+        funPlayerTwoWins: () -> Summary,
+        funTie: () -> Summary
+    ): () -> Summary {
         return when {
             playElementFromPlayerOne == playElementFromPlayerTwo -> {
-                GameResultValues.DRAW
+                funTie
             }
             hasPlayerOneWon(playElementFromPlayerOne, playElementFromPlayerTwo) -> {
-                GameResultValues.PLAYER_ONE_WINS
+                funPlayerOneWins
             }
             else -> {
-                GameResultValues.PLAYER_TWO_WINS
+                funPlayerTwoWins
             }
         }
     }
